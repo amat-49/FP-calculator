@@ -1,3 +1,28 @@
+# Team Required setup and HOWTO
+
+1. Clone the project: Open the terminal in (VS code) and run:
+
+git clone https://github.com/amat-49/FP-calculator.git
+
+cd FP-calculator
+
+2. Install Dependencies: This command will automatically install React, Vite, Vitest, and the Testing Library items we use in the code:
+
+npm install
+
+3. Run the App
+
+npm run dev
+
+*You can then open the local URL (usually http://localhost:5173) provided in the terminal to see the calculator
+
+4. Run the tests
+To make sure the math logic is working on their machine:
+
+npm test
+
+------------------------------------------------------------
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
