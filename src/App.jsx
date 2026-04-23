@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // --- UI COMPONENTS ---
 const Card = ({ children, id }) => (
@@ -89,7 +89,6 @@ export default function FPCalculator() {
     const num = value === "" ? "" : Number(value);
     setInputs(prev => ({ ...prev, [type]: { ...prev[type], [level]: num } }));
     if (num < 0) setResult(null);
-    calculate();
   };
 
   const handleVAFChange = (index, value) => {
@@ -98,7 +97,6 @@ export default function FPCalculator() {
     updated[index] = num;
     setVafFactors(updated);
     if (num < 0 || num > 5) setResult(null);
-    calculate();
   };
 
   const calculate = () => {
@@ -127,16 +125,61 @@ export default function FPCalculator() {
     }
   };
 
+  useEffect(() => calculate(), [inputs, vafFactors, enhanced, mode]);
+
+  const openHelp = () => {
+    document.getElementById("HelpDialog").showModal();
+  }
+
+  const closeHelp = () => {
+    document.getElementById("HelpDialog").close();
+  }
+
   return (
     <>
-      <h1 style={{ textAlign: "center" }}>Enhanced FP Calculator</h1>
+      <dialog id="HelpDialog">
+        <div style={{ padding: "20px", maxWidth: "700px" }}>
+          <h1>Help</h1>
+          <>
+          {mode == '3D' ? (
+            <p>
+              Enhanced Metrics: Enter the complexity and performance ratings for 3D metrics.
+            </p>
+          ) : (
+            <>
+              <p>
+                Function Counts: Enter the count for each type of function. Each box represents a low, average, or high estimate.
+                <br/>EI = External Inputs
+                <br/>EO = External Outputs
+                <br/>EQ = External Inquiries
+                <br/>ILF = Internal Logic Files
+                <br/>EIF = External Interface Files
+                <br/>A weighted sum is taken and produces the UFP (unadjusted function points).
+              </p>
+              <p>
+                VAF Factors: Rate each prompt from 0 to 5 based on how well it describes the project.
+                <br/> The VAF (Value Adjustment Factor) is calculated as 0.65 + 0.01 * (sum of these ratings).
+              </p>
+              <p>
+                The final FP is UFP * VAF.
+              </p>
+            </>
+          )}
+          </>
+          <Button key="Close" onClick={closeHelp}>Close</Button>
+        </div>
+      </dialog>
 
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+      <button id="HelpButton" onClick={() => openHelp()} style={{position: "fixed", top: "20px", right: "20px", height: "40px", width: "80px", zIndex: 1000}} >Help</button>
+      <div style={{ margin: "0 auto", display: "flex", flexDirection: "row", width: "50%", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
+        <h1 style={{ textAlign: "center" }}>Enhanced FP Calculator</h1>
         {["FP", "3D"].map(m => (
           <button
+            className='modeButton'
             key={m}
             onClick={() => { setMode(m); setResult(null); }}
             style={{
+              height: "40px",
               flex: 1, padding: "12px", borderRadius: "8px", border: "1px solid #ccc",
               background: mode === m ? "black" : "#fff",
               color: mode === m ? "white" : "black",
