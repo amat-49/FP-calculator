@@ -143,7 +143,10 @@ export default function FPCalculator() {
           <>
           {mode == '3D' ? (
             <p>
-              Enhanced Metrics: Enter the complexity and performance ratings for 3D metrics.
+              3D Metrics: Enter the complexity and performance metrics for the program from 0 to 10.
+              <br/> The functional score is the same as the FP result.
+              <br/> The technical score is the FP * (complexity / 10).
+              <br/> The performance score is the FP * (performance / 10).
             </p>
           ) : (
             <>
@@ -170,7 +173,7 @@ export default function FPCalculator() {
         </div>
       </dialog>
 
-      <button id="HelpButton" onClick={() => openHelp()} style={{position: "fixed", top: "20px", right: "20px", height: "40px", width: "80px", zIndex: 1000}} >Help</button>
+      <button id="HelpButton" onClick={() => openHelp()} >Help</button>
       <div style={{ margin: "0 auto", display: "flex", flexDirection: "row", width: "50%", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
         <h1 style={{ textAlign: "center" }}>Enhanced FP Calculator</h1>
         {["FP", "3D"].map(m => (
@@ -219,26 +222,27 @@ export default function FPCalculator() {
               <Card id='FPRatingsSection'>
                 <h2 style={{ fontSize: "18px", marginTop: "0" }}>VAF Factors (0-5)</h2>
                 {!isVAFValid && <p style={{ color: "#ff4d4d", fontSize: "13px", fontWeight: "bold" }}>Factors must be between 0 and 5</p>}
-                <div style={{display: "flex", flexDirection: "row", gap: "10px"}}>
-                  <div style={{display: "flex", flexDirection: "column", gap: "10px", flexBasis: "780px", flexGrow: 1}}>
+                
+                  {/* <div style={{display: "flex", flexDirection: "column", gap: "10px", flexBasis: "780px", flexGrow: 1}}>
                     {vafPrompts.map((prompt, i) => (
-                      <p className='VAFRow' style={{textAlign: "left", height: "21.6px"}}>{vafPrompts[i]}</p>
+                      
                     ))}
-                  </div>
+                  </div> */}
                   
-                  <div style={{display: "flex", flexDirection: "column", gap: "10px"}}>
+                  <div style={{display: "flex", flexDirection: "column", gap: "0px"}}>
                     {vafFactors.map((val, i) => (
-                      <Input className='VAFRow'
-                        key={i}
-                        type="number"
-                        label={false}
-                        value={val}
-                        error={val < 0 || val > 5}
-                        onChange={(e) => handleVAFChange(i, e.target.value)}
-                      />
+                      <div key={i} className='VAFRow' style={{display: "flex", flexDirection: "row", gap: "10px"}}>
+                        <p style={{textAlign: "left", minHeight: "21.6px"}}>{vafPrompts[i]}</p>
+                        <Input
+                          type="number"
+                          label={false}
+                          value={val}
+                          error={val < 0 || val > 5}
+                          onChange={(e) => handleVAFChange(i, e.target.value)}
+                        />
+                      </div>
                     ))}
                   </div>
-                </div>
               </Card>
             </div>
         </>
@@ -265,7 +269,7 @@ export default function FPCalculator() {
       )}
 
       {result && (
-        <div style={{ marginTop: "24px", padding: "20px", background: "#000", color: "#fff", borderRadius: "12px" }}>
+        <div id="Results" style={{ padding: "20px", background: "#000", color: "#fff", borderRadius: "12px" }}>
           <h2 style={{ marginTop: "0", color: "#4ade80" }}>Results</h2>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px" }}>
             {result.type === "FP" ? (

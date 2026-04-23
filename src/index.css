@@ -3,8 +3,8 @@
   flex-direction: row;
   gap: 16px;
   flex-wrap: wrap;
-  height: 500px;
   align-items: stretch;
+  margin-bottom: 120px;
 }
 
 #FPCountsSection {
@@ -18,6 +18,24 @@
   flex: 3;
 }
 
+#HelpButton {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  height: 40px;
+  width: 80px;
+  z-index: 1000;
+}
+
+#Results {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
 .FPInputsRow {
   display: flex;
   flex-direction: row;
@@ -27,7 +45,11 @@
   flex-grow: 2;
 }
 
-.VAFRow::after {
+.VAFRow p {
+  flex: 3;
+}
+
+.VAFRow p::after {
   content: "";
   display: block;
   height: 2px;       /* Thickness of the line */
