@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
 // --- UI COMPONENTS ---
-const Card = ({ children }) => (
-  <div style={{ border: "1px solid #ccc", padding: "20px", borderRadius: "12px", background: "#fff", marginBottom: "20px", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
+const Card = ({ children, id }) => (
+  <div id={id} style={{ border: "1px solid #ccc", padding: "20px", borderRadius: "12px", background: "#fff", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}>
     {children}
   </div>
 );
@@ -29,7 +29,7 @@ const Input = ({ error, label, ...props }) => (
     <input 
       style={{ 
         padding: "10px", borderRadius: "6px", border: error ? "2px solid #ff4d4d" : "1px solid #ccc",
-        fontSize: "14px", outline: "none", width: "60px", boxSizing: "border-box"
+        fontSize: "14px", outline: "none", width: "60px", boxSizing: "border-box", height: "20px"
       }} 
       {...props} 
     />
@@ -55,6 +55,22 @@ export default function FPCalculator() {
   });
 
   const [vafFactors, setVafFactors] = useState(Array(14).fill(0));
+  const vafPrompts = [
+    "Does the system require reliable backup and recovery?",
+    "Are data communications required?",
+    "Are there distributed processing functions?",
+    "Is performance critical?",
+    "Will the system run in an existing, heavily utilized operational environment?",
+    "Does the system require online data entry?",
+    "Does the on-line data entry require the input transaction to be built over multiple screens or operations?",
+    "Is the master file updated online?",
+    "Are the inputs, outputs, files, or inquiries complex?",
+    "Is the internal processing complex?",
+    "Is the code designed to be reusable?",
+    "Are conversion and installation included in the design?",
+    "Is the system designed for multiple installations in different organizations?",
+    "Is the application designed to facilitate change and ease of use by the user?"
+  ];
   const [enhanced, setEnhanced] = useState({ complexity: 5, performance: 5 });
   const [result, setResult] = useState(null);
 
@@ -73,6 +89,7 @@ export default function FPCalculator() {
     const num = value === "" ? "" : Number(value);
     setInputs(prev => ({ ...prev, [type]: { ...prev[type], [level]: num } }));
     if (num < 0) setResult(null);
+    calculate();
   };
 
   const handleVAFChange = (index, value) => {
@@ -81,6 +98,7 @@ export default function FPCalculator() {
     updated[index] = num;
     setVafFactors(updated);
     if (num < 0 || num > 5) setResult(null);
+    calculate();
   };
 
   const calculate = () => {
@@ -134,47 +152,52 @@ export default function FPCalculator() {
       {mode === "FP" ? (
         <>
           <div id='FPInputsContainer'>
-            <div id='FPCountsSection'>
-              <Card>
-                <h2 style={{ fontSize: "18px", marginTop: "0" }}>Function Counts</h2>
-                {Object.keys(inputs).map((type) => (
-                  <div className='FPInputsRow' key={type} style={{ marginBottom: "15px" }}>
-                    <div style={{ marginBottom: "5px", fontWeight: "bold" }}>{type}</div>
-                    {["low", "avg", "high"].map((level) => (
-                      <Input
-                        key={level}
-                        type="number"
-                        label={level.toUpperCase()}
-                        value={inputs[type][level]}
-                        error={inputs[type][level] < 0}
-                        onChange={(e) => handleChange(type, level, e.target.value)}
-                      />
-                    ))}
-                  </div>
-                ))}
-              </Card>
-            </div>
-
-            <div id='FPRatingsSection'>
-              <Card>
-                <h2 style={{ fontSize: "18px", marginTop: "0" }}>VAF Factors (0-5)</h2>
-                {!isVAFValid && <p style={{ color: "#ff4d4d", fontSize: "13px", fontWeight: "bold" }}>Factors must be between 0 and 5</p>}
-                {/* FIXED GRID: auto-fit ensures boxes wrap instead of going off screen */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))", gap: "12px" }}>
-                  {vafFactors.map((val, i) => (
-                    <Input
-                      key={i}
-                      type="number"
-                      label={false}
-                      value={val}
-                      error={val < 0 || val > 5}
-                      onChange={(e) => handleVAFChange(i, e.target.value)}
-                    />
+              <Card id="FPCountsSection">
+                <h2 style={{ flex: 0, fontSize: "18px", marginTop: "0" }}>Function Counts</h2>
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-evenly"}}>
+                  {Object.keys(inputs).map((type) => (
+                    <div className='FPInputsRow' key={type} style={{ marginBottom: "15px" }}>
+                      <div style={{ marginBottom: "5px", fontWeight: "bold" }}>{type}</div>
+                      {["low", "avg", "high"].map((level) => (
+                        <Input
+                          key={level}
+                          type="number"
+                          label={level.toUpperCase()}
+                          value={inputs[type][level]}
+                          error={inputs[type][level] < 0}
+                          onChange={(e) => handleChange(type, level, e.target.value)}
+                        />
+                      ))}
+                    </div>
                   ))}
                 </div>
               </Card>
+
+              <Card id='FPRatingsSection'>
+                <h2 style={{ fontSize: "18px", marginTop: "0" }}>VAF Factors (0-5)</h2>
+                {!isVAFValid && <p style={{ color: "#ff4d4d", fontSize: "13px", fontWeight: "bold" }}>Factors must be between 0 and 5</p>}
+                <div style={{display: "flex", flexDirection: "row", gap: "10px"}}>
+                  <div style={{display: "flex", flexDirection: "column", gap: "10px", flexBasis: "780px", flexGrow: 1}}>
+                    {vafPrompts.map((prompt, i) => (
+                      <p className='VAFRow' style={{textAlign: "left", height: "21.6px"}}>{vafPrompts[i]}</p>
+                    ))}
+                  </div>
+                  
+                  <div style={{display: "flex", flexDirection: "column", gap: "10px"}}>
+                    {vafFactors.map((val, i) => (
+                      <Input className='VAFRow'
+                        key={i}
+                        type="number"
+                        label={false}
+                        value={val}
+                        error={val < 0 || val > 5}
+                        onChange={(e) => handleVAFChange(i, e.target.value)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </Card>
             </div>
-          </div>
         </>
       ) : (
         <Card>
@@ -197,10 +220,6 @@ export default function FPCalculator() {
           </div>
         </Card>
       )}
-
-      <Button onClick={calculate} disabled={!canCalculate}>
-        {canCalculate ? "Calculate Results" : "Fix Errors to Calculate"}
-      </Button>
 
       {result && (
         <div style={{ marginTop: "24px", padding: "20px", background: "#000", color: "#fff", borderRadius: "12px" }}>

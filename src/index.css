@@ -3,10 +3,19 @@
   flex-direction: row;
   gap: 16px;
   flex-wrap: wrap;
+  height: 500px;
+  align-items: stretch;
+}
+
+#FPCountsSection {
+  display: flex;
+  flex-direction: column;
+  flex: 0;
+  flex-basis: 275px;
 }
 
 #FPRatingsSection {
-  flex-grow: 2;
+  flex: 3;
 }
 
 .FPInputsRow {
@@ -15,6 +24,14 @@
   gap: 16px;
   flex-wrap: wrap;
   justify-content: center;
+  flex-grow: 2;
+}
+
+.VAFRow::after {
+  content: "";
+  display: block;
+  height: 2px;       /* Thickness of the line */
+  background: black;
 }
 
 
@@ -94,7 +111,7 @@ h2 {
 }
 
 h1 {
-  font-size: 56px;
+  font-size: 30px;
   letter-spacing: -1.68px;
   margin: 32px 0;
   @media (max-width: 1024px) {
