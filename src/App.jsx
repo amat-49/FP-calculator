@@ -100,7 +100,10 @@ export default function FPCalculator() {
   };
 
   const calculate = () => {
-    if (!canCalculate) return;
+    if (!canCalculate) {
+      setResult({ type: "Invalid" });
+      return;
+    }
     let ufp = 0;
     for (let type in inputs) {
       for (let level in inputs[type]) {
@@ -174,7 +177,7 @@ export default function FPCalculator() {
       </dialog>
 
       <button id="HelpButton" onClick={() => openHelp()} >Help</button>
-      <div style={{ margin: "0 auto", display: "flex", flexDirection: "row", width: "50%", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
+      <div style={{ margin: "0 auto", display: "flex", flexDirection: "row", width: "50%", minWidth: "560px", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
         <h1 style={{ textAlign: "center" }}>Enhanced FP Calculator</h1>
         {["FP", "3D"].map(m => (
           <button
@@ -222,13 +225,6 @@ export default function FPCalculator() {
               <Card id='FPRatingsSection'>
                 <h2 style={{ fontSize: "18px", marginTop: "0" }}>VAF Factors (0-5)</h2>
                 {!isVAFValid && <p style={{ color: "#ff4d4d", fontSize: "13px", fontWeight: "bold" }}>Factors must be between 0 and 5</p>}
-                
-                  {/* <div style={{display: "flex", flexDirection: "column", gap: "10px", flexBasis: "780px", flexGrow: 1}}>
-                    {vafPrompts.map((prompt, i) => (
-                      
-                    ))}
-                  </div> */}
-                  
                   <div style={{display: "flex", flexDirection: "column", gap: "0px"}}>
                     {vafFactors.map((val, i) => (
                       <div key={i} className='VAFRow' style={{display: "flex", flexDirection: "row", gap: "10px"}}>
@@ -269,25 +265,39 @@ export default function FPCalculator() {
       )}
 
       {result && (
-        <div id="Results" style={{ padding: "20px", background: "#000", color: "#fff", borderRadius: "12px" }}>
+        <div id="Results" style={{ display: "flex", flexDirection: "column", alignContent: "center", alignItems: "center", padding: "20px", background: "#000", color: "#fff", borderRadius: "12px" }}>
           <h2 style={{ marginTop: "0", color: "#4ade80" }}>Results</h2>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px" }}>
-            {result.type === "FP" ? (
-              <>
-                <div><label style={{ fontSize: "12px", opacity: 0.7 }}>UFP</label><div style={{ fontSize: "20px" }}>{result.ufp}</div></div>
-                <div><label style={{ fontSize: "12px", opacity: 0.7 }}>VAF</label><div style={{ fontSize: "20px" }}>{result.vaf}</div></div>
-                <div><label style={{ fontSize: "12px", opacity: 0.7 }}>Final FP</label><div style={{ fontSize: "20px", fontWeight: "bold" }}>{result.fp}</div></div>
-              </>
-            ) : (
-              <>
-                <div><label style={{ fontSize: "12px", opacity: 0.7 }}>Functional</label><div style={{ fontSize: "20px" }}>{result.enhancedResult.functional}</div></div>
-                <div><label style={{ fontSize: "12px", opacity: 0.7 }}>Technical</label><div style={{ fontSize: "20px" }}>{result.enhancedResult.technical}</div></div>
-                <div><label style={{ fontSize: "12px", opacity: 0.7 }}>Performance</label><div style={{ fontSize: "20px" }}>{result.enhancedResult.performance}</div></div>
-              </>
-            )}
+          <div style={{ maxWidth: "100%", display: "flex", flexDirection: "row", justifyContent: "center", justifyItems: "stretch", gap: "25vw", flexWrap: "nowrap" }}>
+            {showResult(result)}
           </div>
         </div>
       )}
     </>
   );
+}
+
+function showResult(result) {
+  if (result.type === "FP") {
+    return (
+      <>
+        <div style={{flex: "0 0 55px"}}><label style={{ fontSize: "12px", opacity: 0.7 }}>UFP</label><div style={{ fontSize: "20px" }}>{result.ufp}</div></div>
+        <div style={{flex: "0 0 55px"}}><label style={{ fontSize: "12px", opacity: 0.7 }}>VAF</label><div style={{ fontSize: "20px" }}>{result.vaf}</div></div>
+        <div style={{flex: "0 0 55px"}}><label style={{ fontSize: "12px", opacity: 0.7 }}>Final FP</label><div style={{ fontSize: "20px", fontWeight: "bold" }}>{result.fp}</div></div>
+      </>
+    );
+  } else if (result.type === "3D") {
+    return (
+      <>
+        <div style={{flex: "0 0 55px"}}><label style={{ fontSize: "12px", opacity: 0.7 }}>Functional</label><div style={{ fontSize: "20px" }}>{result.enhancedResult.functional}</div></div>
+        <div style={{flex: "0 0 55px"}}><label style={{ fontSize: "12px", opacity: 0.7 }}>Technical</label><div style={{ fontSize: "20px" }}>{result.enhancedResult.technical}</div></div>
+        <div style={{flex: "0 0 55px"}}><label style={{ fontSize: "12px", opacity: 0.7 }}>Performance</label><div style={{ fontSize: "20px" }}>{result.enhancedResult.performance}</div></div>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <div><p>Cannot display results with invalid inputs!</p></div>
+      </>
+    );
+  }
 }
