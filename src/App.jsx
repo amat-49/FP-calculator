@@ -82,7 +82,7 @@ export default function FPCalculator() {
   const is3DValid = enhanced.complexity >= 0 && enhanced.complexity <= 10 &&
                     enhanced.performance >= 0 && enhanced.performance <= 10;
 
-  const canCalculate = mode === "FP" ? (isInputsValid && isVAFValid) : is3DValid;
+  const canCalculate = (isInputsValid && isVAFValid && (mode == "FP" || is3DValid));
 
   // HANDLERS
   const handleChange = (type, level, value) => {
